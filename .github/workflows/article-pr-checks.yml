@@ -64,3 +64,29 @@ jobs:
 
       - name: Validar artículo
         run: python scripts/validate_article.py "${{ matrix.article }}"
+
+  gate:
+    name: gate
+    needs: [detect-changed, validate]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comprobar resultado de los jobs anteriores
+        run: |
+          detect="${{ needs.detect-changed.result }}"
+          validate="${{ needs.validate.result }}"
+          echo "detect-changed: $detect"
+          echo "validate: $validate"
+
+          if [ "$detect" != "success" ]; then
+            echo "detect-changed no tuvo éxito."
+            exit 1
+          fi
+
+          # 'skipped' es válido: significa que ningún artículo cambió en este PR.
+          if [ "$validate" != "success" ] && [ "$validate" != "skipped" ]; then
+            echo "Algún artículo no pasó la validación."
+            exit 1
+          fi
+
+          echo "Todos los artículos tocados son válidos (o no había ninguno)."
