@@ -44,7 +44,8 @@ exploración/visualización del resumen) se mantienen.
 - Cobertura de tests: **100%** sobre `src/`, medida con `pytest --cov=src --cov-fail-under=100`.
 - No se permite silenciar cobertura o lint con excepciones globales (`# pragma: no cover`,
   `# noqa` a nivel de fichero) salvo justificación puntual línea a línea.
-- `notebook.ipynb` debe poder ejecutarse con `jupyter nbconvert --execute` sin lanzar excepciones.
+- `notebook.ipynb` debe poder ejecutarse de principio a fin sin lanzar excepciones (comprobado
+  automáticamente por `scripts/validate_article.py`).
 
 ## 5. Keywords y taxonomía
 
@@ -64,8 +65,10 @@ python scripts/validate_article.py articles/<slug>
 ```
 
 La CI (`.github/workflows/article-pr-checks.yml`) ejecuta este mismo script sobre cada carpeta de
-`articles/` que cambie en el PR. El job `gate` agrega el resultado de todos los artículos tocados
-bajo un único nombre de check estable; es ese job (`gate`) el que debe marcarse como "required
+`articles/` que cambie en el PR. Si el PR modifica `taxonomy.yaml` o `scripts/validate_article.py`
+(reglas compartidas que pueden invalidar artículos que el PR no toca), la CI revalida **todos**
+los artículos existentes en vez de limitarse al diff. El job `gate` agrega el resultado bajo un
+único nombre de check estable; es ese job (`gate`) el que debe marcarse como "required
 status check" en la protección de rama de GitHub (Settings → Branches) para que un PR no pueda
 mergearse si algún artículo no cumple la constitución.
 
