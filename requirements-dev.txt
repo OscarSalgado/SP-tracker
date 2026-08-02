@@ -7,4 +7,7 @@ pyyaml==6.0.3
 nbformat==5.10.4
 nbclient==0.11.0
 ipykernel==7.3.0
-pdfplumber==0.11.2
+
+# Para extract_pdf_essence.py: usa pdftotext (apt install poppler-utils) o instala una de:
+# - pdfminer.six>=20221105  (Python pure, sin deps system)
+# Si hay conflictos de cryptography, usa pdftotext del sistema en su lugar.
