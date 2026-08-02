@@ -54,6 +54,9 @@ exploración/visualización del resumen) se mantienen.
   pero **requiere confirmación humana explícita** y debe añadirse a `taxonomy.yaml` en el mismo
   PR, con una `description` breve.
 - No se crean keywords duplicadas o sinónimas de una ya existente: se reutiliza la existente.
+- **Helper**: Ejecutar `python scripts/keyword_suggester.py articles/<slug>` para obtener
+  sugerencias automáticas de keywords basadas en el análisis del `summary.md`. Útil para validar
+  que no faltan keywords relevantes o para descubrir keywords adicionales.
 
 ## 6. Verificación
 
