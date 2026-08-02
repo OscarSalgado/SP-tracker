@@ -25,6 +25,7 @@ jobs:
           python3 - <<'EOF' >> "$GITHUB_OUTPUT"
           import json
           import subprocess
+          from pathlib import Path
 
           base = "origin/${{ github.base_ref }}"
           diff = subprocess.run(
@@ -32,13 +33,23 @@ jobs:
               capture_output=True, text=True, check=True,
           ).stdout.splitlines()
 
-          # >= 3 partes: "articles/<slug>/<fichero>". Con >= 2 también entraban ficheros
-          # sueltos bajo articles/ (p.ej. articles/README.md), que no son un artículo.
-          dirs = sorted({
-              "/".join(f.split("/")[:2])
-              for f in diff
-              if f.startswith("articles/") and len(f.split("/")) >= 3
-          })
+          # Un cambio en taxonomy.yaml o en el propio validador afecta potencialmente a
+          # todos los artículos existentes (no solo a los tocados en este PR): revalídalos
+          # todos en ese caso en vez de limitarse al diff.
+          shared_files = {"taxonomy.yaml", "scripts/validate_article.py"}
+          if shared_files & set(diff):
+              dirs = sorted(
+                  f"articles/{p.name}" for p in Path("articles").iterdir() if p.is_dir()
+              )
+          else:
+              # >= 3 partes: "articles/<slug>/<fichero>". Con >= 2 también entraban
+              # ficheros sueltos bajo articles/ (p.ej. articles/README.md), que no son
+              # un artículo.
+              dirs = sorted({
+                  "/".join(f.split("/")[:2])
+                  for f in diff
+                  if f.startswith("articles/") and len(f.split("/")) >= 3
+              })
           print(f"matrix={json.dumps(dirs)}")
           EOF
 

@@ -75,7 +75,24 @@ def collect_entries() -> list[str]:
         if not metadata_path.is_file():
             continue
 
-        metadata = yaml.safe_load(metadata_path.read_text()) or {}
+        try:
+            metadata = yaml.safe_load(metadata_path.read_text()) or {}
+        except yaml.YAMLError as exc:
+            print(
+                f"aviso: {article_dir.name} tiene metadata.yaml inválido ({exc}), "
+                "se omite de references.bib",
+                file=sys.stderr,
+            )
+            continue
+
+        if not isinstance(metadata, dict):
+            print(
+                f"aviso: {article_dir.name} tiene un metadata.yaml que no es un mapping, "
+                "se omite de references.bib",
+                file=sys.stderr,
+            )
+            continue
+
         missing = [key for key in REQUIRED_BIB_FIELDS if not metadata.get(key)]
         if missing:
             print(
