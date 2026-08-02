@@ -10,3 +10,9 @@ keywords:
   - machine-learning
 status: code_generated  # code_generated | code_not_feasible
 data_source: synthetic  # public | synthetic | none
+
+# Campos bibliográficos (usados para generar references.bib, ver CONSTITUTION.md sección 7).
+entry_type: misc  # article | inproceedings | techreport | misc
+year: 2026
+venue: ""  # opcional: revista/conferencia, si existe
+doi: ""    # opcional

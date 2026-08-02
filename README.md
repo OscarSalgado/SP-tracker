@@ -14,7 +14,8 @@ datos y un notebook — todo bajo controles de calidad estrictos.
 5. Se localizan **datos públicos** que reproduzcan los resultados, o se generan **datos
    sintéticos** representativos si no existen.
 6. Se genera un **Jupyter Notebook** que reproduce y visualiza los resultados.
-7. Todo el código generado mantiene **controles estrictos de calidad**: tests con 100% de
+7. Se registra en un **gestor de referencias bibliográficas** (`references.bib`, BibTeX).
+8. Todo el código generado mantiene **controles estrictos de calidad**: tests con 100% de
    cobertura, dependencias ancladas, linting.
 
 Las reglas obligatorias de este proceso están fijadas en [`CONSTITUTION.md`](CONSTITUTION.md);
@@ -39,6 +40,14 @@ pip install -r requirements-dev.txt
 python scripts/validate_article.py articles/<slug>
 ```
 
+Para regenerar el gestor de referencias bibliográficas (`references.bib`) a partir de los
+`metadata.yaml` de todos los artículos:
+
+```bash
+python scripts/generate_bibliography.py          # regenera references.bib
+python scripts/generate_bibliography.py --check  # falla si está desactualizado (usado en CI)
+```
+
 ## Estructura
 
 ```
@@ -54,8 +63,10 @@ articles/
     notebook.ipynb
     requirements.txt
 taxonomy.yaml         # vocabulario controlado de keywords
+references.bib        # gestor de referencias bibliográficas (BibTeX, generado, no editar a mano)
 CONSTITUTION.md       # estándares obligatorios para cualquier PR
-scripts/validate_article.py  # validación automática (usada por CI y por el comando)
+scripts/validate_article.py       # validación automática (usada por CI y por el comando)
+scripts/generate_bibliography.py  # genera/comprueba references.bib
 ```
 
 Ver [`CONSTITUTION.md`](CONSTITUTION.md) para el detalle normativo completo y
