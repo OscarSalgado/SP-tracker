@@ -67,7 +67,9 @@ def find_changed_article_dirs(repo_root: Path) -> list[Path]:
     dirs: set[Path] = set()
     for file_path in changed_files:
         parts = Path(file_path).parts
-        if len(parts) >= 2 and parts[0] == "articles":
+        # >= 3: "articles/<slug>/<fichero>". Con >= 2 también entrarían ficheros sueltos
+        # bajo articles/ (p.ej. articles/README.md), que no son un artículo.
+        if len(parts) >= 3 and parts[0] == "articles":
             dirs.add(repo_root / parts[0] / parts[1])
     return sorted(dirs)
 
