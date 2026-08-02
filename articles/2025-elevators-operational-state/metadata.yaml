@@ -1,0 +1,23 @@
+# Metadatos del artículo: An interpretable operational state classification framework for elevators through CNNs
+
+title: "An interpretable operational state classification framework for elevators through convolutional neural networks"
+authors:
+  - "Jon Olaizola"
+  - "Unai Izagirre"
+  - "Oscar Serradilla"
+  - "Ekhi Zugasti"
+  - "Mikel Mendicute"
+  - "Jose I. Aizpurua"
+source_url: "https://onlinelibrary.wiley.com/doi/10.1111/mice.13479"
+date_added: "2025-01-18"
+keywords:
+  - deep-learning
+  - vibration-analysis
+status: code_generated
+data_source: synthetic
+
+# Campos bibliográficos (para references.bib)
+entry_type: article
+year: 2025
+venue: "Computer-Aided Civil and Infrastructure Engineering"
+doi: "10.1111/mice.13479"
