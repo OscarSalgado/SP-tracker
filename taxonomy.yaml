@@ -1,0 +1,39 @@
+# Vocabulario controlado de temas/keywords para clasificar artículos vigilados.
+#
+# Reglas:
+# - Cada artículo en articles/<slug>/metadata.yaml debe usar únicamente keywords
+#   definidas aquí (campo `name`).
+# - Añadir una keyword nueva requiere confirmación humana explícita y debe hacerse
+#   en el mismo PR que introduce el artículo que la necesita, con una `description`
+#   breve que explique el ámbito del tema.
+# - No crear keywords duplicadas o sinónimas de una ya existente (p.ej. "nlp" y
+#   "procesamiento-lenguaje-natural"): reutilizar la existente.
+
+keywords:
+  - name: machine-learning
+    description: >
+      Métodos generales de aprendizaje automático (supervisado, no supervisado,
+      aprendizaje por refuerzo) no cubiertos por una categoría más específica.
+
+  - name: deep-learning
+    description: >
+      Redes neuronales profundas: arquitecturas, entrenamiento, optimización.
+
+  - name: nlp
+    description: >
+      Procesamiento de lenguaje natural: modelos de lenguaje, embeddings, tareas
+      de texto (clasificación, generación, traducción, etc.).
+
+  - name: computer-vision
+    description: >
+      Visión por computador: clasificación, detección y segmentación de imágenes o
+      vídeo.
+
+  - name: optimization
+    description: >
+      Algoritmos de optimización matemática o metaheurística aplicados a
+      problemas de ingeniería o aprendizaje automático.
+
+  - name: time-series
+    description: >
+      Análisis, predicción o detección de anomalías en series temporales.

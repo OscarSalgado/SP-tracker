@@ -1,0 +1,16 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.1
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: validate-changed-articles
+        name: Validar artículos modificados
+        entry: python scripts/validate_article.py --changed
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]

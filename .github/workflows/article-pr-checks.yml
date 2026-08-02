@@ -1,0 +1,66 @@
+name: Article PR checks
+
+on:
+  pull_request:
+    paths:
+      - "articles/**"
+      - "taxonomy.yaml"
+      - "scripts/validate_article.py"
+      - "requirements-dev.txt"
+
+jobs:
+  detect-changed:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.detect.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: detect
+        run: |
+          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+          import json
+          import subprocess
+
+          base = "origin/${{ github.base_ref }}"
+          diff = subprocess.run(
+              ["git", "diff", "--name-only", f"{base}...HEAD"],
+              capture_output=True, text=True, check=True,
+          ).stdout.splitlines()
+
+          dirs = sorted({
+              "/".join(f.split("/")[:2])
+              for f in diff
+              if f.startswith("articles/") and len(f.split("/")) >= 2
+          })
+          print(f"matrix={json.dumps(dirs)}")
+          EOF
+
+  validate:
+    needs: detect-changed
+    if: needs.detect-changed.outputs.matrix != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        article: ${{ fromJson(needs.detect-changed.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar herramientas de validación
+        run: pip install -r requirements-dev.txt
+
+      - name: Instalar dependencias del artículo (si existen)
+        run: |
+          if [ -f "${{ matrix.article }}/requirements.txt" ]; then
+            pip install -r "${{ matrix.article }}/requirements.txt"
+          fi
+
+      - name: Validar artículo
+        run: python scripts/validate_article.py "${{ matrix.article }}"

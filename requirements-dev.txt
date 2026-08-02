@@ -1,0 +1,9 @@
+# Herramientas de desarrollo/validación (no son dependencias de ningún artículo,
+# se instalan a nivel de repo para poder ejecutar scripts/validate_article.py).
+ruff==0.16.1
+pytest==9.1.1
+pytest-cov==7.1.0
+pyyaml==6.0.1
+nbformat==5.10.4
+nbclient==0.11.0
+ipykernel==7.3.0
