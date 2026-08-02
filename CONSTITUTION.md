@@ -64,7 +64,10 @@ python scripts/validate_article.py articles/<slug>
 ```
 
 La CI (`.github/workflows/article-pr-checks.yml`) ejecuta este mismo script sobre cada carpeta de
-`articles/` que cambie en el PR, y el PR no debería mergearse si falla.
+`articles/` que cambie en el PR. El job `gate` agrega el resultado de todos los artículos tocados
+bajo un único nombre de check estable; es ese job (`gate`) el que debe marcarse como "required
+status check" en la protección de rama de GitHub (Settings → Branches) para que un PR no pueda
+mergearse si algún artículo no cumple la constitución.
 
 ## 7. Automatización de referencia
 
