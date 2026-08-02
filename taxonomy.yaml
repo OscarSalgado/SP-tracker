@@ -42,3 +42,8 @@ keywords:
     description: >
       Análisis de señales de vibración: diagnóstico de maquinaria, separación de
       componentes, detección de fallos en rodamientos y engranajes.
+
+  - name: exercise-physiology
+    description: >
+      Fisiología del ejercicio, modelado de rendimiento físico/deportivo,
+      cicloergometría, parámetros anaeróbicos y aeróbicos de desempeño.

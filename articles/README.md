@@ -11,10 +11,11 @@ Consultar `taxonomy.yaml` para la lista completa de keywords disponibles.
 
 | Keyword | Artículos |
 |---------|-----------|
-| _(sin artículos todavía)_ | |
+| `exercise-physiology` | 1996-critical-power-model |
+| `optimization` | 1996-critical-power-model |
 
 ## Todos los artículos
 
 | Slug | Título | Keywords | Fecha |
 |------|--------|----------|-------|
-| _(sin artículos todavía)_ | | | |
+| [1996-critical-power-model](articles/1996-critical-power-model/) | A 3-parameter critical power model | exercise-physiology, optimization | 2026-08-02 |
