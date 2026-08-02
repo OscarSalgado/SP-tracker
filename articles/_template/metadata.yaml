@@ -1,0 +1,12 @@
+# Plantilla de referencia. Copia esta carpeta a articles/<slug>/ y rellena
+# cada campo. Ver CONSTITUTION.md para el detalle de cada uno.
+
+title: "Plantilla de artículo (ejemplo de referencia)"
+authors:
+  - "Autor de ejemplo"
+source_url: "https://example.org/articulo-de-plantilla"
+date_added: "2026-08-02"
+keywords:
+  - machine-learning
+status: code_generated  # code_generated | code_not_feasible
+data_source: synthetic  # public | synthetic | none
