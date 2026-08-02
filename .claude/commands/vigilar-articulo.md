@@ -18,7 +18,9 @@ confianza, usa `AskUserQuestion` y espera la respuesta antes de continuar** — 
 1. Lee `CONSTITUTION.md` y `taxonomy.yaml` si no los tienes ya en contexto.
 2. Obtén el contenido del artículo:
    - Si es una URL, usa `WebFetch`.
-   - Si es una ruta local a un PDF, usa `Read` (puedes leer PDFs directamente).
+   - Si es una ruta local a un PDF: ejecuta `python scripts/extract_pdf_essence.py <ruta-pdf>` para extraer
+     solo secciones clave (abstract, intro, métodos, resultados) sin cargar todo el PDF. Esto reduce
+     tokens ~50-70%.
 3. Deriva un `slug` en kebab-case, corto y estable (p.ej. `2026-08-02-nombre-del-articulo`), y
    crea `articles/<slug>/` copiando la estructura de `articles/_template/` como punto de partida
    (no reutilices el contenido de ejemplo, solo la estructura). Este `slug` será también la clave
