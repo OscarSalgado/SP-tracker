@@ -1,101 +1,51 @@
 # Constitución del repo SP-tracker
 
-Este documento fija los estándares **obligatorios** para cualquier Pull Request que añada o
-modifique un artículo vigilado en `articles/**`. Los PRs que no los cumplan no deben mergearse.
-La comprobación automática de estas reglas vive en `scripts/validate_article.py`, que es la
-**fuente de verdad ejecutable**: si este documento y el script alguna vez difieren, gana el
-script y hay que corregir el documento.
+Estándares **obligatorios** para PRs sobre `articles/**`. La comprobación automática vive en
+`scripts/validate_article.py`, que es la **fuente de verdad ejecutable**: si difiere del presente
+documento, gana el script.
 
-## 1. Qué es un "artículo vigilado"
+## 1. Estructura de un artículo vigilado
 
-Un artículo vigilado es un directorio `articles/<slug>/` con la misma estructura que
-`articles/_template/`. `<slug>` es un identificador corto y estable (kebab-case), por ejemplo
-`2026-08-02-attention-is-all-you-need`.
+Un artículo vigilado es `articles/<slug>/` (slug: kebab-case, ej. `2026-08-02-attention-is-all-you-need`) con la estructura de `articles/_template/`.
 
-## 2. Prohibido: commitear el material original con copyright
+## 2. Contenido obligatorio
 
-- **No se sube el PDF ni el texto completo del artículo** al repositorio, bajo ningún concepto.
-- Solo se referencia el artículo original mediante su `source_url` y/o DOI en `metadata.yaml`.
-- Todo el resto de contenido (resumen, código, datos, notebook) es contenido **derivado**,
-  generado a partir del artículo, no una copia del mismo.
+No se commiteará el PDF ni texto original. Se referencia por `source_url`/DOI en `metadata.yaml`. El resto (resumen, código, datos, notebook) es derivado.
 
-## 3. Contenido obligatorio de cada artículo
+| Fichero | Obligatorio | Descripción |
+|---------|:-----------:|-------------|
+| `metadata.yaml` | Sí | Título, autores, `source_url`/DOI, keywords (de `taxonomy.yaml`), `status`, `data_source`, `entry_type`, `year`, `venue`/`doi` (sección 6). |
+| `summary.md` | Sí | Objetivo, método, resultados, limitaciones. |
+| `src/` | Sí* | Código open source que reproduce la técnica. |
+| `NOT_FEASIBLE.md` | Si no hay `src/` | Justificación de inviabilidad. |
+| `tests/` | Si hay `src/` | **100% cobertura** sobre `src/`. |
+| `data/README.md` | Sí | Dataset público o datos sintéticos con justificación. |
+| `notebook.ipynb` | Sí | Carga datos, ejecuta código, visualiza resultados. |
+| `requirements.txt` | Si hay `src/` | Dependencias ancladas. Solo open source. |
 
-| Fichero/carpeta        | Obligatorio | Descripción |
-|-------------------------|:-----------:|-------------|
-| `metadata.yaml`          | Sí | Título, autores, `source_url`/DOI, fecha de vigilancia, `keywords` (deben existir en `taxonomy.yaml`), `status`, `data_source`, y los campos bibliográficos de la sección 7 (`entry_type`, `year`, `venue`/`doi` cuando existan). |
-| `summary.md`             | Sí | Resumen informativo: objetivo, método, resultados principales, limitaciones. |
-| `src/`                   | Sí* | Código (Python u otro lenguaje open source) que reproduce/reutiliza la técnica del artículo. |
-| `NOT_FEASIBLE.md`        | Solo si no hay `src/` | Justificación razonada de por qué no es viable generar código de reuso. |
-| `tests/`                 | Sí (si existe `src/`) | Tests con **100% de cobertura** sobre `src/`. |
-| `data/README.md`         | Sí | Procedencia de los datos: dataset público (con fuente/licencia) o datos sintéticos (con script y justificación de representatividad). |
-| `notebook.ipynb`         | Sí | Notebook que carga los datos, ejecuta el código y visualiza los resultados clave. Debe ejecutar de principio a fin sin errores. |
-| `requirements.txt`       | Sí (si existe `src/`) | Dependencias ancladas a una versión concreta. Solo librerías open source; nada que exija una API de pago para reproducir el resultado. |
+\* Excepto artículos teóricos sin algoritmo implementable, que usan `NOT_FEASIBLE.md` en lugar de `src/`, `tests/`, `requirements.txt`.
 
-\* `src/` es obligatorio salvo que generar código de reuso sea realmente inviable (por ejemplo,
-un artículo puramente teórico/de revisión sin algoritmo implementable). En ese caso, el
-`NOT_FEASIBLE.md` sustituye a `src/`, `tests/` y `requirements.txt`, pero `summary.md`,
-`data/README.md` (puede indicar "no aplica") y `notebook.ipynb` (puede reducirse a la
-exploración/visualización del resumen) se mantienen.
+## 3. Calidad de código
 
-## 4. Calidad de código
+- `ruff check` y `ruff format --check` sin errores.
+- **100% cobertura** de tests: `pytest --cov=src --cov-fail-under=100`.
+- Sin excepciones globales (`# pragma: no cover`, `# noqa` globales). Solo puntualmente si se justifica.
+- `notebook.ipynb` ejecutable sin excepciones (validado automáticamente).
 
-- `ruff check` y `ruff format --check` deben pasar sin errores sobre `src/` y `tests/`.
-- Cobertura de tests: **100%** sobre `src/`, medida con `pytest --cov=src --cov-fail-under=100`.
-- No se permite silenciar cobertura o lint con excepciones globales (`# pragma: no cover`,
-  `# noqa` a nivel de fichero) salvo justificación puntual línea a línea.
-- `notebook.ipynb` debe poder ejecutarse de principio a fin sin lanzar excepciones (comprobado
-  automáticamente por `scripts/validate_article.py`).
+## 4. Keywords y validación
 
-## 5. Keywords y taxonomía
+Keywords en `metadata.yaml` deben existir en `taxonomy.yaml`. Nuevas keywords requieren confirmación explícita y deben añadirse a `taxonomy.yaml` en el mismo PR (sin duplicados/sinónimos).
 
-- Las `keywords` de `metadata.yaml` deben existir en `taxonomy.yaml`.
-- Si ninguna keyword existente encaja con la temática del artículo, se puede añadir una nueva,
-  pero **requiere confirmación humana explícita** y debe añadirse a `taxonomy.yaml` en el mismo
-  PR, con una `description` breve.
-- No se crean keywords duplicadas o sinónimas de una ya existente: se reutiliza la existente.
+Validar antes de abrir PR: `python scripts/validate_article.py articles/<slug>`.
 
-## 6. Verificación
+La CI (`.github/workflows/article-pr-checks.yml`) ejecuta automáticamente. Si se toca `taxonomy.yaml` o `validate_article.py`, revalida todos los artículos. El job `gate` es el status check requerido.
 
-Antes de abrir un PR (o de darlo por terminado en el propio comando `/vigilar-articulo`), debe
-ejecutarse:
+## 5. Referencias BibTeX (`references.bib`)
 
-```bash
-python scripts/validate_article.py articles/<slug>
-```
+`references.bib` es generado (nunca editado a mano) por `python scripts/generate_bibliography.py` a partir de `metadata.yaml`. La clave de citación es el `slug` del artículo.
 
-La CI (`.github/workflows/article-pr-checks.yml`) ejecuta este mismo script sobre cada carpeta de
-`articles/` que cambie en el PR. Si el PR modifica `taxonomy.yaml` o `scripts/validate_article.py`
-(reglas compartidas que pueden invalidar artículos que el PR no toca), la CI revalida **todos**
-los artículos existentes en vez de limitarse al diff. El job `gate` agrega el resultado bajo un
-único nombre de check estable; es ese job (`gate`) el que debe marcarse como "required
-status check" en la protección de rama de GitHub (Settings → Branches) para que un PR no pueda
-mergearse si algún artículo no cumple la constitución.
+Campos requeridos en `metadata.yaml`: `entry_type` (article|inproceedings|techreport|misc), `year`, `venue` (opt.), `doi` (opt.). Template excluido. La CI verifica actualización con `--check`.
 
-## 7. Gestión bibliográfica (`references.bib`)
+## 6. Automatización
 
-El repo mantiene un gestor de referencias bibliográficas en formato **BibTeX**
-(`references.bib`, en la raíz), compatible con Zotero/Mendeley/JabRef/Overleaf, con una entrada
-por artículo vigilado.
-
-- `references.bib` es **contenido derivado**: se genera con
-  `python scripts/generate_bibliography.py` a partir de los `metadata.yaml` de `articles/*/` y
-  **nunca se edita a mano**. Cualquier corrección se hace en el `metadata.yaml` del artículo y se
-  regenera el fichero.
-- La clave de citación (`@article{<clave>, ...}`) es el `slug` del artículo (el nombre de su
-  carpeta en `articles/`), para poder ir de la cita al expediente completo sin ambigüedad.
-- Para que un artículo aparezca en `references.bib`, su `metadata.yaml` debe incluir además de los
-  campos de la sección 3:
-  - `entry_type`: uno de `article`, `inproceedings`, `techreport`, `misc`.
-  - `year`: año de publicación.
-  - `venue` (opcional): revista/conferencia, si existe.
-  - `doi` (opcional): DOI, si existe.
-- `articles/_template/` se excluye siempre de `references.bib` (no es un artículo real).
-- La CI comprueba con `python scripts/generate_bibliography.py --check` que el fichero commiteado
-  está actualizado; si no lo está, el PR falla.
-
-## 8. Automatización de referencia
-
-El comando `/vigilar-articulo <url-o-ruta-pdf>` (definido en
-`.claude/commands/vigilar-articulo.md`) implementa el flujo completo descrito en este documento.
-Cualquier generación manual de un artículo debe seguir el mismo proceso y los mismos estándares.
+El comando `/vigilar-articulo <url-o-ruta-pdf>` implementa el flujo completo. Génesis manual debe seguir los mismos estándares.
