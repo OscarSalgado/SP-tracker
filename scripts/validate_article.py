@@ -89,9 +89,9 @@ def check_required_files(article_dir: Path) -> list[str]:
 
 
 def check_no_source_pdfs(article_dir: Path) -> list[str]:
-    pdfs = sorted(article_dir.rglob("*.pdf")) + sorted(article_dir.rglob("*.PDF"))
+    pdfs = [p for p in article_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".pdf"]
     if pdfs:
-        names = ", ".join(str(p.relative_to(article_dir)) for p in pdfs)
+        names = ", ".join(str(p.relative_to(article_dir)) for p in sorted(pdfs))
         return [f"no se debe commitear el PDF/texto original del artículo (encontrado: {names})"]
     return []
 
