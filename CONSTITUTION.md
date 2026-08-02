@@ -49,14 +49,59 @@ exploración/visualización del resumen) se mantienen.
 
 ## 5. Keywords y taxonomía
 
-- Las `keywords` de `metadata.yaml` deben existir en `taxonomy.yaml`.
-- Si ninguna keyword existente encaja con la temática del artículo, se puede añadir una nueva,
-  pero **requiere confirmación humana explícita** y debe añadirse a `taxonomy.yaml` en el mismo
-  PR, con una `description` breve.
+Las `keywords` de `metadata.yaml` clasifican temáticamente cada artículo usando un vocabulario
+controlado (`taxonomy.yaml`). El objetivo es permitir búsquedas/navegación consistentes y evitar
+ambigüedades.
+
+### 5.1 Reglas de keywords
+
+- Las `keywords` de `metadata.yaml` **deben existir en `taxonomy.yaml`**.
+- Cada artículo debe tener **al menos una keyword** (puede tener más de una para cubrir múltiples
+  temas).
 - No se crean keywords duplicadas o sinónimas de una ya existente: se reutiliza la existente.
-- **Helper**: Ejecutar `python scripts/keyword_suggester.py articles/<slug>` para obtener
-  sugerencias automáticas de keywords basadas en el análisis del `summary.md`. Útil para validar
-  que no faltan keywords relevantes o para descubrir keywords adicionales.
+- Si ninguna keyword existente encaja razonablemente con la temática del artículo, se puede
+  proponer una nueva, pero **requiere confirmación humana explícita** y debe añadirse a
+  `taxonomy.yaml` en el mismo PR con una `description` breve.
+
+### 5.2 Sistema automático de sugerencias de keywords
+
+Se proporciona un helper para sugerir keywords de forma automática:
+
+```bash
+python scripts/keyword_suggester.py articles/<slug>
+python scripts/keyword_suggester.py articles/<slug> --show-scores
+```
+
+**Cómo funciona:**
+- Analiza términos frecuentes en `summary.md` del artículo.
+- Compara con términos asociados a cada keyword en la taxonomía.
+- Calcula una puntuación por keyword (% de términos coincidentes).
+- Sugiere keywords no aún asignadas con puntuación ≥ 0.05.
+
+**Uso recomendado:**
+- Ejecutar después de escribir `summary.md` para validar cobertura de keywords.
+- Revisar sugerencias con `--show-scores` para ver confianza de cada recomendación.
+- Usar para descubrir keywords adicionales que puedan haber sido olvidadas.
+
+**Ejemplo:**
+```
+📍 Artículo: articles/2026-08-02-longitudinal-vibration-elevators
+✓ Keywords actuales: optimization, vibration-analysis, application-system
+💡 Sin sugerencias (baja relevancia)
+```
+
+### 5.3 Keywords disponibles en la taxonomía
+
+Consultar `taxonomy.yaml` para la lista completa y descripción de cada keyword. Actualmente
+incluye categorías como:
+- `machine-learning`: Métodos generales de aprendizaje automático
+- `deep-learning`: Redes neuronales profundas
+- `nlp`: Procesamiento de lenguaje natural
+- `computer-vision`: Visión por computador
+- `optimization`: Algoritmos de optimización
+- `time-series`: Análisis de series temporales
+- `vibration-analysis`: Análisis de señales de vibración
+- `application-system`: Implementación práctica/sistema aplicado a caso real
 
 ## 6. Verificación
 
