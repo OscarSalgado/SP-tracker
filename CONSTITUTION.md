@@ -55,22 +55,33 @@ exploración/visualización del resumen) se mantienen.
   PR, con una `description` breve.
 - No se crean keywords duplicadas o sinónimas de una ya existente: se reutiliza la existente.
 
-## 6. Verificación
+## 6. Verificación y requisitos para merge
+
+**Requisito obligatorio: Todos los PRs deben pasar todas las comprobaciones de CI antes de poder
+mergearse.** Ningún PR que modifique `articles/**` puede mergearse si no cumple con los estándares
+de esta Constitución, tal y como se valida automáticamente en CI.
 
 Antes de abrir un PR (o de darlo por terminado en el propio comando `/vigilar-articulo`), debe
-ejecutarse:
+ejecutarse localmente:
 
 ```bash
 python scripts/validate_article.py articles/<slug>
 ```
 
-La CI (`.github/workflows/article-pr-checks.yml`) ejecuta este mismo script sobre cada carpeta de
-`articles/` que cambie en el PR. Si el PR modifica `taxonomy.yaml` o `scripts/validate_article.py`
-(reglas compartidas que pueden invalidar artículos que el PR no toca), la CI revalida **todos**
-los artículos existentes en vez de limitarse al diff. El job `gate` agrega el resultado bajo un
-único nombre de check estable; es ese job (`gate`) el que debe marcarse como "required
-status check" en la protección de rama de GitHub (Settings → Branches) para que un PR no pueda
-mergearse si algún artículo no cumple la constitución.
+La CI (`.github/workflows/article-pr-checks.yml`) ejecuta automáticamente:
+- `ruff check` y `ruff format --check` sobre `src/` y `tests/`.
+- `pytest --cov=src --cov-fail-under=100` para verificar cobertura al 100%.
+- `python scripts/validate_article.py` sobre cada carpeta de `articles/` que cambie en el PR.
+- Si el PR modifica `taxonomy.yaml` o `scripts/validate_article.py` (reglas compartidas que pueden
+  invalidar artículos que el PR no toca), la CI revalida **todos** los artículos existentes en vez
+  de limitarse al diff.
+- `python scripts/generate_bibliography.py --check` para asegurar que `references.bib` está
+  actualizada.
+
+El job `gate` agrega todos estos checks bajo un único nombre estable. **Este job `gate` debe estar
+configurado como "required status check" en la protección de rama de GitHub** (Settings → Branches
+→ Branch protection rules → Require status checks to pass before merging) para hacer cumplir que
+ningún PR puede mergearse si falla.
 
 ## 7. Gestión bibliográfica (`references.bib`)
 
