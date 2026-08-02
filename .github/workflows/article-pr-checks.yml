@@ -6,7 +6,10 @@ on:
       - "articles/**"
       - "taxonomy.yaml"
       - "scripts/validate_article.py"
+      - "scripts/generate_bibliography.py"
+      - "references.bib"
       - "requirements-dev.txt"
+  workflow_dispatch: {}
 
 jobs:
   detect-changed:
@@ -23,18 +26,33 @@ jobs:
           python3 - <<'EOF' >> "$GITHUB_OUTPUT"
           import json
           import subprocess
+          from pathlib import Path
 
-          base = "origin/${{ github.base_ref }}"
+          # github.base_ref está vacío fuera de un evento pull_request (p.ej. al disparar
+          # el workflow manualmente con workflow_dispatch): usa "main" como base en ese caso.
+          base = "origin/${{ github.base_ref || 'main' }}"
           diff = subprocess.run(
               ["git", "diff", "--name-only", f"{base}...HEAD"],
               capture_output=True, text=True, check=True,
           ).stdout.splitlines()
 
-          dirs = sorted({
-              "/".join(f.split("/")[:2])
-              for f in diff
-              if f.startswith("articles/") and len(f.split("/")) >= 2
-          })
+          # Un cambio en taxonomy.yaml o en el propio validador afecta potencialmente a
+          # todos los artículos existentes (no solo a los tocados en este PR): revalídalos
+          # todos en ese caso en vez de limitarse al diff.
+          shared_files = {"taxonomy.yaml", "scripts/validate_article.py"}
+          if shared_files & set(diff):
+              dirs = sorted(
+                  f"articles/{p.name}" for p in Path("articles").iterdir() if p.is_dir()
+              )
+          else:
+              # >= 3 partes: "articles/<slug>/<fichero>". Con >= 2 también entraban
+              # ficheros sueltos bajo articles/ (p.ej. articles/README.md), que no son
+              # un artículo.
+              dirs = sorted({
+                  "/".join(f.split("/")[:2])
+                  for f in diff
+                  if f.startswith("articles/") and len(f.split("/")) >= 3
+              })
           print(f"matrix={json.dumps(dirs)}")
           EOF
 
@@ -64,3 +82,51 @@ jobs:
 
       - name: Validar artículo
         run: python scripts/validate_article.py "${{ matrix.article }}"
+
+  check-bibliography:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar herramientas de validación
+        run: pip install -r requirements-dev.txt
+
+      - name: Comprobar que references.bib está actualizado
+        run: python scripts/generate_bibliography.py --check
+
+  gate:
+    name: gate
+    needs: [detect-changed, validate, check-bibliography]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comprobar resultado de los jobs anteriores
+        run: |
+          detect="${{ needs.detect-changed.result }}"
+          validate="${{ needs.validate.result }}"
+          bibliography="${{ needs.check-bibliography.result }}"
+          echo "detect-changed: $detect"
+          echo "validate: $validate"
+          echo "check-bibliography: $bibliography"
+
+          if [ "$detect" != "success" ]; then
+            echo "detect-changed no tuvo éxito."
+            exit 1
+          fi
+
+          # 'skipped' es válido para validate: significa que ningún artículo cambió en este PR.
+          if [ "$validate" != "success" ] && [ "$validate" != "skipped" ]; then
+            echo "Algún artículo no pasó la validación."
+            exit 1
+          fi
+
+          if [ "$bibliography" != "success" ]; then
+            echo "references.bib está desactualizado."
+            exit 1
+          fi
+
+          echo "Todos los artículos tocados son válidos y references.bib está actualizado."

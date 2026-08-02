@@ -14,3 +14,10 @@ repos:
         language: system
         pass_filenames: false
         stages: [pre-commit]
+
+      - id: check-bibliography
+        name: Comprobar que references.bib está actualizado
+        entry: python scripts/generate_bibliography.py --check
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]

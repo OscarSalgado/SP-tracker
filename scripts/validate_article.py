@@ -31,7 +31,10 @@ REQUIRED_METADATA_KEYS = [
     "keywords",
     "status",
     "data_source",
+    "entry_type",
+    "year",
 ]
+ALLOWED_ENTRY_TYPES = {"article", "inproceedings", "techreport", "misc"}
 
 
 def load_taxonomy_keywords(taxonomy_path: Path) -> set[str]:
@@ -64,7 +67,9 @@ def find_changed_article_dirs(repo_root: Path) -> list[Path]:
     dirs: set[Path] = set()
     for file_path in changed_files:
         parts = Path(file_path).parts
-        if len(parts) >= 2 and parts[0] == "articles":
+        # >= 3: "articles/<slug>/<fichero>". Con >= 2 también entrarían ficheros sueltos
+        # bajo articles/ (p.ej. articles/README.md), que no son un artículo.
+        if len(parts) >= 3 and parts[0] == "articles":
             dirs.add(repo_root / parts[0] / parts[1])
     return sorted(dirs)
 
@@ -94,10 +99,20 @@ def check_no_source_pdfs(article_dir: Path) -> list[str]:
 def check_src_or_not_feasible(article_dir: Path) -> tuple[list[str], bool]:
     has_src = (article_dir / "src").is_dir()
     has_not_feasible = (article_dir / "NOT_FEASIBLE.md").is_file()
+
     if has_src and has_not_feasible:
         return ["no puede existir src/ y NOT_FEASIBLE.md a la vez"], has_src
     if not has_src and not has_not_feasible:
         return ["debe existir src/ (código de reuso) o NOT_FEASIBLE.md (justificación)"], has_src
+
+    if has_not_feasible:
+        errors = [
+            f"NOT_FEASIBLE.md sustituye a '{rel}': no debe existir"
+            for rel in ("tests", "requirements.txt")
+            if (article_dir / rel).exists()
+        ]
+        return errors, has_src
+
     return [], has_src
 
 
@@ -129,6 +144,12 @@ def check_metadata(article_dir: Path, taxonomy_keywords: set[str]) -> list[str]:
                 f"keywords no presentes en taxonomy.yaml: {', '.join(unknown)} "
                 "(añádelas a taxonomy.yaml o usa una existente)"
             )
+
+    entry_type = metadata.get("entry_type")
+    if entry_type is not None and entry_type not in ALLOWED_ENTRY_TYPES:
+        errors.append(
+            f"'entry_type' debe ser uno de {sorted(ALLOWED_ENTRY_TYPES)}, no '{entry_type}'"
+        )
 
     return errors
 
@@ -225,6 +246,8 @@ def validate_article(article_dir: Path, taxonomy_keywords: set[str]) -> list[str
 
     if has_src:
         errors += check_ruff(article_dir / "src")
+        if (article_dir / "tests").is_dir():
+            errors += check_ruff(article_dir / "tests")
         errors += check_tests_and_coverage(article_dir)
 
     errors += check_notebook_executes(article_dir / "notebook.ipynb")

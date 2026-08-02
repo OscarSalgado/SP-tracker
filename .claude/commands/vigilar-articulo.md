@@ -21,9 +21,13 @@ confianza, usa `AskUserQuestion` y espera la respuesta antes de continuar** — 
    - Si es una ruta local a un PDF, usa `Read` (puedes leer PDFs directamente).
 3. Deriva un `slug` en kebab-case, corto y estable (p.ej. `2026-08-02-nombre-del-articulo`), y
    crea `articles/<slug>/` copiando la estructura de `articles/_template/` como punto de partida
-   (no reutilices el contenido de ejemplo, solo la estructura).
+   (no reutilices el contenido de ejemplo, solo la estructura). Este `slug` será también la clave
+   de citación en `references.bib`.
 4. **Recuerda: nunca copies ni guardes el PDF/texto completo del artículo en el repo.** Solo su
    `source_url`/DOI en `metadata.yaml`.
+5. Rellena en `metadata.yaml` los campos bibliográficos: `entry_type` (`article` /
+   `inproceedings` / `techreport` / `misc`), `year`, y si existen, `venue` (revista/conferencia) y
+   `doi`. Si no tienes claro el `entry_type` correcto, pregunta al usuario en vez de adivinar.
 
 ## Fase 1 — Resumen
 
@@ -76,6 +80,12 @@ notebook debe poder ejecutarse de principio a fin sin errores.
    ```
 3. Corrige cualquier fallo (lint, cobertura, notebook, metadata, keywords) hasta que el script
    termine sin errores. No des el artículo por terminado si el script falla.
+4. Regenera la bibliografía y comprueba que queda al día:
+   ```bash
+   python scripts/generate_bibliography.py
+   ```
+   El nuevo artículo debe aparecer en `references.bib` con clave `<slug>`. Si no aparece, revisa
+   que `metadata.yaml` tenga `entry_type`, `title`, `authors`, `year` y `source_url`.
 
 ## Cierre
 
