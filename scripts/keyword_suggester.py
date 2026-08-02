@@ -80,6 +80,14 @@ KEYWORD_TERMS = {
             "estress", "estrés", "aceleración", "amortiguamiento", "frecuencias", "transitorios",
             "impulsivos", "excentricidad", "oscilaciones"
         }
+    },
+    "application-system": {
+        "terms": {
+            "application system", "sistema de aplicación", "aplicación práctica",
+            "implementación", "modelo aplicado", "caso de uso", "industrial", "validación experimental",
+            "demostración", "sistema real", "implementación real", "validación", "caso práctico",
+            "escalabilidad", "despliegue", "sistema completo"
+        }
     }
 }
 
