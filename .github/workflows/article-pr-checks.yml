@@ -101,7 +101,11 @@ jobs:
   gate:
     name: gate
     needs: [detect-changed, validate, check-bibliography]
-    if: always()
+    if: |
+      always() &&
+      (needs.detect-changed.result == 'success') &&
+      (needs.validate.result == 'success' || needs.validate.result == 'skipped') &&
+      (needs.check-bibliography.result == 'success')
     runs-on: ubuntu-latest
     steps:
       - name: Comprobar resultado de los jobs anteriores
