@@ -6,6 +6,8 @@ on:
       - "articles/**"
       - "taxonomy.yaml"
       - "scripts/validate_article.py"
+      - "scripts/generate_bibliography.py"
+      - "references.bib"
       - "requirements-dev.txt"
 
 jobs:
@@ -65,9 +67,24 @@ jobs:
       - name: Validar artículo
         run: python scripts/validate_article.py "${{ matrix.article }}"
 
+  check-bibliography:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar herramientas de validación
+        run: pip install -r requirements-dev.txt
+
+      - name: Comprobar que references.bib está actualizado
+        run: python scripts/generate_bibliography.py --check
+
   gate:
     name: gate
-    needs: [detect-changed, validate]
+    needs: [detect-changed, validate, check-bibliography]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -75,18 +92,25 @@ jobs:
         run: |
           detect="${{ needs.detect-changed.result }}"
           validate="${{ needs.validate.result }}"
+          bibliography="${{ needs.check-bibliography.result }}"
           echo "detect-changed: $detect"
           echo "validate: $validate"
+          echo "check-bibliography: $bibliography"
 
           if [ "$detect" != "success" ]; then
             echo "detect-changed no tuvo éxito."
             exit 1
           fi
 
-          # 'skipped' es válido: significa que ningún artículo cambió en este PR.
+          # 'skipped' es válido para validate: significa que ningún artículo cambió en este PR.
           if [ "$validate" != "success" ] && [ "$validate" != "skipped" ]; then
             echo "Algún artículo no pasó la validación."
             exit 1
           fi
 
-          echo "Todos los artículos tocados son válidos (o no había ninguno)."
+          if [ "$bibliography" != "success" ]; then
+            echo "references.bib está desactualizado."
+            exit 1
+          fi
+
+          echo "Todos los artículos tocados son válidos y references.bib está actualizado."

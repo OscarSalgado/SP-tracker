@@ -31,7 +31,10 @@ REQUIRED_METADATA_KEYS = [
     "keywords",
     "status",
     "data_source",
+    "entry_type",
+    "year",
 ]
+ALLOWED_ENTRY_TYPES = {"article", "inproceedings", "techreport", "misc"}
 
 
 def load_taxonomy_keywords(taxonomy_path: Path) -> set[str]:
@@ -129,6 +132,12 @@ def check_metadata(article_dir: Path, taxonomy_keywords: set[str]) -> list[str]:
                 f"keywords no presentes en taxonomy.yaml: {', '.join(unknown)} "
                 "(añádelas a taxonomy.yaml o usa una existente)"
             )
+
+    entry_type = metadata.get("entry_type")
+    if entry_type is not None and entry_type not in ALLOWED_ENTRY_TYPES:
+        errors.append(
+            f"'entry_type' debe ser uno de {sorted(ALLOWED_ENTRY_TYPES)}, no '{entry_type}'"
+        )
 
     return errors
 

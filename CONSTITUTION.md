@@ -23,7 +23,7 @@ Un artículo vigilado es un directorio `articles/<slug>/` con la misma estructur
 
 | Fichero/carpeta        | Obligatorio | Descripción |
 |-------------------------|:-----------:|-------------|
-| `metadata.yaml`          | Sí | Título, autores, `source_url`/DOI, fecha de vigilancia, `keywords` (deben existir en `taxonomy.yaml`), `status`, `data_source`. |
+| `metadata.yaml`          | Sí | Título, autores, `source_url`/DOI, fecha de vigilancia, `keywords` (deben existir en `taxonomy.yaml`), `status`, `data_source`, y los campos bibliográficos de la sección 7 (`entry_type`, `year`, `venue`/`doi` cuando existan). |
 | `summary.md`             | Sí | Resumen informativo: objetivo, método, resultados principales, limitaciones. |
 | `src/`                   | Sí* | Código (Python u otro lenguaje open source) que reproduce/reutiliza la técnica del artículo. |
 | `NOT_FEASIBLE.md`        | Solo si no hay `src/` | Justificación razonada de por qué no es viable generar código de reuso. |
@@ -69,7 +69,29 @@ bajo un único nombre de check estable; es ese job (`gate`) el que debe marcarse
 status check" en la protección de rama de GitHub (Settings → Branches) para que un PR no pueda
 mergearse si algún artículo no cumple la constitución.
 
-## 7. Automatización de referencia
+## 7. Gestión bibliográfica (`references.bib`)
+
+El repo mantiene un gestor de referencias bibliográficas en formato **BibTeX**
+(`references.bib`, en la raíz), compatible con Zotero/Mendeley/JabRef/Overleaf, con una entrada
+por artículo vigilado.
+
+- `references.bib` es **contenido derivado**: se genera con
+  `python scripts/generate_bibliography.py` a partir de los `metadata.yaml` de `articles/*/` y
+  **nunca se edita a mano**. Cualquier corrección se hace en el `metadata.yaml` del artículo y se
+  regenera el fichero.
+- La clave de citación (`@article{<clave>, ...}`) es el `slug` del artículo (el nombre de su
+  carpeta en `articles/`), para poder ir de la cita al expediente completo sin ambigüedad.
+- Para que un artículo aparezca en `references.bib`, su `metadata.yaml` debe incluir además de los
+  campos de la sección 3:
+  - `entry_type`: uno de `article`, `inproceedings`, `techreport`, `misc`.
+  - `year`: año de publicación.
+  - `venue` (opcional): revista/conferencia, si existe.
+  - `doi` (opcional): DOI, si existe.
+- `articles/_template/` se excluye siempre de `references.bib` (no es un artículo real).
+- La CI comprueba con `python scripts/generate_bibliography.py --check` que el fichero commiteado
+  está actualizado; si no lo está, el PR falla.
+
+## 8. Automatización de referencia
 
 El comando `/vigilar-articulo <url-o-ruta-pdf>` (definido en
 `.claude/commands/vigilar-articulo.md`) implementa el flujo completo descrito en este documento.
