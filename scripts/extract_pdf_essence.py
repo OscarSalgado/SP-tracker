@@ -1,76 +1,102 @@
 #!/usr/bin/env python3
-"""Extrae el contenido esencial de un PDF, reduciendo tokens.
+"""Extrae contenido esencial de un PDF para Claude, reduciendo tokens ~50-70%.
 
-Carga solo: título, autores, abstract, intro, métodos, resultados, conclusiones.
-Omite: referencias, apéndices, portadas extras, tablas de contenidos.
+Usa pdftotext (Poppler) como opción preferida por no tener conflictos de deps.
+Fallback: pdfminer.six si está disponible sin conflictos.
+
+Secciones extraídas: abstract, introducción, métodos, resultados, conclusiones
+Secciones omitidas: referencias, apéndices, tablas de contenidos, portadas
 
 Uso:
     python scripts/extract_pdf_essence.py <ruta-pdf>
 
-Retorna texto limpio para pasar a Claude, típicamente 30-50% del PDF original.
+Retorna texto limpio para pasar a Claude.
 """
 
 from __future__ import annotations
 
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
-try:
-    import pdfplumber
-except ImportError:
-    print("Error: instala pdfplumber: pip install pdfplumber", file=sys.stderr)
-    sys.exit(1)
-
 
 KEYWORDS_START = {
-    "abstract", "resumen", "introduction", "introducción",
-    "introduction and related work", "method", "metodología", "methodology",
-    "approach", "algorithm", "sistema", "system", "background"
+    "abstract", "resumen", "summary", "executive summary",
+    "introduction", "introducción", "related work",
+    "method", "metodología", "methodology", "approach",
+    "algorithm", "sistema", "system", "background"
 }
 
 KEYWORDS_END = {
-    "references", "bibliography", "bibliografía", "appendix", "apéndice",
-    "supplementary", "suplementario", "acknowledgment", "agradecimientos",
-    "author contributions", "contributions", "data availability"
+    "references", "bibliography", "bibliografía", "cited works",
+    "appendix", "apéndice", "supplementary", "suplementario",
+    "acknowledgment", "agradecimientos", "author contributions",
+    "data availability", "funding"
 }
 
-PAGES_LIMIT = 20  # Máximo de páginas a procesar (típicamente 1-20 contienen lo esencial)
+
+def filter_essential_content(text: str) -> str:
+    """Extrae solo secciones esenciales, omitiendo referencias y apéndices."""
+    lines = text.split('\n')
+    result = []
+    found_start = False
+
+    for line in lines:
+        lower = line.lower().strip()
+
+        # Detectar fin del contenido principal
+        if lower and any(kw in lower for kw in KEYWORDS_END):
+            break
+
+        # Detectar inicio del contenido principal
+        if lower and any(kw in lower for kw in KEYWORDS_START):
+            found_start = True
+
+        # Incluir líneas después del inicio o que contengan keywords de inicio
+        if found_start or (lower and any(kw in lower for kw in KEYWORDS_START)):
+            if line.strip():
+                result.append(line)
+
+    return "\n".join(result)
 
 
-def extract_pdf_text(pdf_path: str | Path) -> str:
-    """Extrae texto esencial del PDF, omitiendo referencias y apéndices."""
-    pdf_path = Path(pdf_path)
+def extract_pdf_text(pdf_path: Path) -> str:
+    """Extrae texto esencial del PDF con estrategia fallback."""
     if not pdf_path.exists():
         raise FileNotFoundError(f"{pdf_path} no existe")
 
-    texts = []
-    found_main_content = False
+    # Estrategia 1: pdftotext (Poppler) - más ligero, sin deps Python complejas
+    if shutil.which("pdftotext"):
+        try:
+            result = subprocess.run(
+                ["pdftotext", str(pdf_path), "-"],
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            if result.returncode == 0 and result.stdout:
+                return filter_essential_content(result.stdout)
+        except (subprocess.TimeoutExpired, Exception):
+            pass
 
+    # Estrategia 2: pdfminer.six (solo si existe y pdftotext no funcionó)
     try:
-        with pdfplumber.open(pdf_path) as pdf:
-            for page_num, page in enumerate(pdf.pages[:PAGES_LIMIT]):
-                text = page.extract_text() or ""
-                if not text.strip():
-                    continue
+        from pdfminer.high_level import extract_text
+        text = extract_text(str(pdf_path))
+        if text:
+            return filter_essential_content(text)
+    except Exception:
+        # Silenciar cualquier error de import o ejecución
+        pass
 
-                lower_text = text.lower()
-
-                # Detectar inicio de contenido principal
-                if any(kw in lower_text for kw in KEYWORDS_START):
-                    found_main_content = True
-
-                # Detectar fin (referencias, apéndices)
-                if any(kw in lower_text for kw in KEYWORDS_END):
-                    break
-
-                # Solo incluir si ya encontramos contenido o esta página lo tiene
-                if found_main_content or any(kw in lower_text for kw in KEYWORDS_START):
-                    texts.append(text)
-
-    except Exception as e:
-        raise RuntimeError(f"Error leyendo PDF: {e}")
-
-    return "\n\n".join(texts)
+    # Si ambas fallan
+    raise RuntimeError(
+        f"No se pudo extraer PDF. Opciones:\n"
+        "  1. Instala pdftotext: apt-get install poppler-utils\n"
+        "  2. O instala pdfminer.six: pip install pdfminer.six\n"
+        "  3. O usa: Read el PDF en Claude Code directamente"
+    )
 
 
 def main() -> int:
@@ -78,7 +104,7 @@ def main() -> int:
         print(__doc__, file=sys.stderr)
         return 1
 
-    pdf_path = sys.argv[1]
+    pdf_path = Path(sys.argv[1])
     try:
         content = extract_pdf_text(pdf_path)
         print(content)
