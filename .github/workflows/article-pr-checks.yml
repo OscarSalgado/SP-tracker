@@ -9,6 +9,7 @@ on:
       - "scripts/generate_bibliography.py"
       - "references.bib"
       - "requirements-dev.txt"
+  workflow_dispatch: {}
 
 jobs:
   detect-changed:
@@ -27,7 +28,9 @@ jobs:
           import subprocess
           from pathlib import Path
 
-          base = "origin/${{ github.base_ref }}"
+          # github.base_ref está vacío fuera de un evento pull_request (p.ej. al disparar
+          # el workflow manualmente con workflow_dispatch): usa "main" como base en ese caso.
+          base = "origin/${{ github.base_ref || 'main' }}"
           diff = subprocess.run(
               ["git", "diff", "--name-only", f"{base}...HEAD"],
               capture_output=True, text=True, check=True,
