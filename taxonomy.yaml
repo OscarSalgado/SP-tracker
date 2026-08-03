@@ -37,3 +37,8 @@ keywords:
   - name: time-series
     description: >
       Análisis, predicción o detección de anomalías en series temporales.
+
+  - name: vibration-analysis
+    description: >
+      Análisis de señales de vibración: diagnóstico de maquinaria, separación de
+      componentes, detección de fallos en rodamientos y engranajes.
