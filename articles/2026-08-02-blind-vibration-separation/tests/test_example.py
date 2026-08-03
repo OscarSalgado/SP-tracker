@@ -3,8 +3,8 @@ import pytest
 from src import (
     extract_periodic_components,
     extract_transient_components,
-    spectral_kurtosis,
     separate_vibration_signal,
+    spectral_kurtosis,
 )
 
 

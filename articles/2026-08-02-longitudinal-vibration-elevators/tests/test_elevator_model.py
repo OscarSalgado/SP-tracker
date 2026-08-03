@@ -2,7 +2,6 @@
 
 import numpy as np
 import pytest
-
 from src.elevator_model import ElevatorMDOFModel
 
 
@@ -10,19 +9,19 @@ from src.elevator_model import ElevatorMDOFModel
 def default_params():
     """Default elevator parameters."""
     return {
-        'm_motor': 198.45,
-        'm_traction': 2835,
-        'm_car_frame': 2282,
-        'm_cabin': 1805,
-        'm_counterweight': 4887.4,
-        'k_rope_car': 2.72e5,
-        'k_rope_counter': 2.72e5,
-        'k_isolation': 9.8e5,
-        'rope_stiffness': 1.176e11,
-        'c_rope_car': 1000,
-        'c_rope_counter': 1000,
-        'c_isolation': 2000,
-        'damping': 500,
+        "m_motor": 198.45,
+        "m_traction": 2835,
+        "m_car_frame": 2282,
+        "m_cabin": 1805,
+        "m_counterweight": 4887.4,
+        "k_rope_car": 2.72e5,
+        "k_rope_counter": 2.72e5,
+        "k_isolation": 9.8e5,
+        "rope_stiffness": 1.176e11,
+        "c_rope_car": 1000,
+        "c_rope_counter": 1000,
+        "c_isolation": 2000,
+        "damping": 500,
     }
 
 
@@ -111,7 +110,7 @@ def test_parameter_sensitivity(default_params):
 
     # Increase stiffness
     params_stiff = default_params.copy()
-    params_stiff['k_isolation'] *= 1.5
+    params_stiff["k_isolation"] *= 1.5
     model2 = ElevatorMDOFModel(params_stiff)
     K2 = model2.K
 
@@ -122,19 +121,19 @@ def test_parameter_sensitivity(default_params):
 def test_with_minimal_parameters():
     """Test model with minimal parameter set."""
     minimal_params = {
-        'm_motor': 100,
-        'm_traction': 1000,
-        'm_car_frame': 1000,
-        'm_cabin': 500,
-        'm_counterweight': 2000,
-        'k_rope_car': 1e5,
-        'k_rope_counter': 1e5,
-        'k_isolation': 1e5,
-        'rope_stiffness': 1e10,
-        'c_rope_car': 100,
-        'c_rope_counter': 100,
-        'c_isolation': 100,
-        'damping': 50,
+        "m_motor": 100,
+        "m_traction": 1000,
+        "m_car_frame": 1000,
+        "m_cabin": 500,
+        "m_counterweight": 2000,
+        "k_rope_car": 1e5,
+        "k_rope_counter": 1e5,
+        "k_isolation": 1e5,
+        "rope_stiffness": 1e10,
+        "c_rope_car": 100,
+        "c_rope_counter": 100,
+        "c_isolation": 100,
+        "damping": 50,
     }
     model = ElevatorMDOFModel(minimal_params)
     assert model.M is not None
