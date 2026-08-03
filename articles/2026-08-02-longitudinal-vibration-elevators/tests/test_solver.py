@@ -86,7 +86,7 @@ def test_rk4_energy_conservation(simple_system):
     for _ in range(1000):
         solver.step(0.0, dt)
         z = solver.z
-        E = 0.5 * z[1]**2 + z[0]**2  # Kinetic + potential
+        E = 0.5 * z[1] ** 2 + z[0] ** 2  # Kinetic + potential
         energies.append(E)
 
     energies = np.array(energies)
@@ -125,28 +125,28 @@ def test_rk4_integrate_constant_velocity():
 
     result = solver.integrate(time, u_func)
 
-    assert 'time' in result
-    assert 'displacement' in result
-    assert 'velocity' in result
-    assert 'acceleration' in result
+    assert "time" in result
+    assert "displacement" in result
+    assert "velocity" in result
+    assert "acceleration" in result
 
 
 def test_solve_elevator_dynamics_basic():
     """Test basic elevator dynamics solve."""
     params = {
-        'm_motor': 100,
-        'm_traction': 1000,
-        'm_car_frame': 1000,
-        'm_cabin': 500,
-        'm_counterweight': 2000,
-        'k_rope_car': 1e5,
-        'k_rope_counter': 1e5,
-        'k_isolation': 1e5,
-        'rope_stiffness': 1e10,
-        'c_rope_car': 100,
-        'c_rope_counter': 100,
-        'c_isolation': 100,
-        'damping': 50,
+        "m_motor": 100,
+        "m_traction": 1000,
+        "m_car_frame": 1000,
+        "m_cabin": 500,
+        "m_counterweight": 2000,
+        "k_rope_car": 1e5,
+        "k_rope_counter": 1e5,
+        "k_isolation": 1e5,
+        "rope_stiffness": 1e10,
+        "c_rope_car": 100,
+        "c_rope_counter": 100,
+        "c_isolation": 100,
+        "damping": 50,
     }
 
     model = ElevatorMDOFModel(params)
@@ -158,14 +158,14 @@ def test_solve_elevator_dynamics_basic():
     solution = solve_elevator_dynamics(model, time, excitations, load_ratio=0.5)
 
     # Check output structure
-    assert 'time' in solution
-    assert 'displacement' in solution
-    assert 'velocity' in solution
-    assert 'acceleration' in solution
+    assert "time" in solution
+    assert "displacement" in solution
+    assert "velocity" in solution
+    assert "acceleration" in solution
 
     # Check dimensions
-    assert len(solution['time']) > 0
-    assert solution['displacement'].shape[0] > 0
+    assert len(solution["time"]) > 0
+    assert solution["displacement"].shape[0] > 0
 
 
 def test_rk4_step_consistency(simple_system):
@@ -180,8 +180,8 @@ def test_rk4_step_consistency(simple_system):
 
     # Two steps with dt/2
     solver2 = RK4Solver(A, B, z0)
-    solver2.step(0.0, dt/2)
-    solver2.step(0.0, dt/2)
+    solver2.step(0.0, dt / 2)
+    solver2.step(0.0, dt / 2)
     z2 = solver2.z
 
     # Results should be close (RK4 error ~ O(dt^5))
@@ -208,19 +208,19 @@ def test_rk4_with_time_varying_input(simple_system):
 def test_solve_elevator_with_different_loads():
     """Test that different load ratios produce different results."""
     params = {
-        'm_motor': 100,
-        'm_traction': 1000,
-        'm_car_frame': 1000,
-        'm_cabin': 500,
-        'm_counterweight': 2000,
-        'k_rope_car': 1e5,
-        'k_rope_counter': 1e5,
-        'k_isolation': 1e5,
-        'rope_stiffness': 1e10,
-        'c_rope_car': 100,
-        'c_rope_counter': 100,
-        'c_isolation': 100,
-        'damping': 50,
+        "m_motor": 100,
+        "m_traction": 1000,
+        "m_car_frame": 1000,
+        "m_cabin": 500,
+        "m_counterweight": 2000,
+        "k_rope_car": 1e5,
+        "k_rope_counter": 1e5,
+        "k_isolation": 1e5,
+        "rope_stiffness": 1e10,
+        "c_rope_car": 100,
+        "c_rope_counter": 100,
+        "c_isolation": 100,
+        "damping": 50,
     }
 
     model = ElevatorMDOFModel(params)
@@ -236,8 +236,8 @@ def test_solve_elevator_with_different_loads():
     sol_full_load = solve_elevator_dynamics(model, time, exc_full_load, load_ratio=1.0)
 
     # Results should differ
-    accel_no_load = sol_no_load['acceleration']
-    accel_full_load = sol_full_load['acceleration']
+    accel_no_load = sol_no_load["acceleration"]
+    accel_full_load = sol_full_load["acceleration"]
 
     # Peak accelerations might differ
     assert np.max(np.abs(accel_no_load)) != np.max(np.abs(accel_full_load))
