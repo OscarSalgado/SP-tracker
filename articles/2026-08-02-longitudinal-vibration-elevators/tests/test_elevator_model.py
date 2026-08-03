@@ -2,7 +2,6 @@
 
 import numpy as np
 import pytest
-
 from src.elevator_model import ElevatorMDOFModel
 
 
