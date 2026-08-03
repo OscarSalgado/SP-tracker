@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from src import ElevatorDynamicModel, DynamicByteCodedGA
+from src import DynamicByteCodedGA, ElevatorDynamicModel
 
 
 class TestElevatorDynamicModel:
@@ -123,11 +123,15 @@ class TestDynamicByteCodedGA:
         parent2 = np.array([100, 110, 120, 130, 140], dtype=np.uint8)
         ga.crossover_rate = 1.0
         child1, child2 = ga.crossover(parent1, parent2)
-        assert np.allclose(child1, parent1) or np.allclose(child1, parent2) or \
-               (np.any(child1 != parent1) and np.any(child1 != parent2))
+        assert (
+            np.allclose(child1, parent1)
+            or np.allclose(child1, parent2)
+            or (np.any(child1 != parent1) and np.any(child1 != parent2))
+        )
 
     def test_optimize_runs_without_error(self):
         """Test optimization completes successfully."""
+
         def simple_objective(params):
             return np.sum((params - 5e5) ** 2)
 
@@ -141,6 +145,7 @@ class TestDynamicByteCodedGA:
 
     def test_optimize_improves_fitness(self):
         """Test optimization improves fitness over generations."""
+
         def simple_objective(params):
             return np.sum((params - 4e5) ** 2)
 
@@ -152,6 +157,7 @@ class TestDynamicByteCodedGA:
 
     def test_optimize_bounds_respected(self):
         """Test optimized parameters respect bounds."""
+
         def dummy_objective(params):
             return np.sum(params)
 
