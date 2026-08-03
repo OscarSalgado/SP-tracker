@@ -2,10 +2,9 @@
 
 import numpy as np
 import pytest
-
-from src.solver import RK4Solver, solve_elevator_dynamics
 from src.elevator_model import ElevatorMDOFModel
 from src.excitations import ExcitationGenerator
+from src.solver import RK4Solver, solve_elevator_dynamics
 
 
 @pytest.fixture

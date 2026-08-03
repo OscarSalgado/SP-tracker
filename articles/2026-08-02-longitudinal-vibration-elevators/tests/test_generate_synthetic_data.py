@@ -1,14 +1,10 @@
 """Tests for generate_synthetic_data module."""
 
-import numpy as np
-import pytest
-from pathlib import Path
-import tempfile
-import os
 
+import numpy as np
 from src.generate_synthetic_data import (
-    get_default_parameters,
     generate_scenario,
+    get_default_parameters,
     main,
 )
 
