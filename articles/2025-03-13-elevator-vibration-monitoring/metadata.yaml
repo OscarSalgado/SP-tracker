@@ -6,6 +6,7 @@ authors:
   - "Hailong Chen"
   - "Luping Lin"
 source_url: "https://doi.org/10.1109/ACCESS.2025.3558880"
+doi: "10.1109/ACCESS.2025.3558880"
 date_added: "2026-08-02"
 keywords:
   - deep-learning
@@ -13,3 +14,6 @@ keywords:
   - time-series
 status: code_generated
 data_source: public
+entry_type: article
+year: 2025
+venue: "IEEE Access"

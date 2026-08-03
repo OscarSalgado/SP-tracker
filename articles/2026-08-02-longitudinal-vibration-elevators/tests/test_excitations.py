@@ -2,7 +2,6 @@
 
 import numpy as np
 import pytest
-
 from src.excitations import ExcitationGenerator
 
 
@@ -115,18 +114,18 @@ def test_combined_excitation(default_generator):
     combined = default_generator.combined_excitation(load_ratio=0.5)
 
     # Check keys
-    assert 'time' in combined
-    assert 'eccentric' in combined
-    assert 'braking' in combined
-    assert 'rail_impact' in combined
-    assert 'combined' in combined
+    assert "time" in combined
+    assert "eccentric" in combined
+    assert "braking" in combined
+    assert "rail_impact" in combined
+    assert "combined" in combined
 
     # Check dimensions
-    assert len(combined['time']) == len(default_generator.t)
-    assert len(combined['eccentric']) == len(default_generator.t)
-    assert len(combined['braking']) == len(default_generator.t)
-    assert len(combined['rail_impact']) == len(default_generator.t)
-    assert len(combined['combined']) == len(default_generator.t)
+    assert len(combined["time"]) == len(default_generator.t)
+    assert len(combined["eccentric"]) == len(default_generator.t)
+    assert len(combined["braking"]) == len(default_generator.t)
+    assert len(combined["rail_impact"]) == len(default_generator.t)
+    assert len(combined["combined"]) == len(default_generator.t)
 
 
 def test_load_ratio_effect(default_generator):
@@ -135,8 +134,8 @@ def test_load_ratio_effect(default_generator):
     combined_full_load = default_generator.combined_excitation(load_ratio=1.0)
 
     # Rail impact should be larger with full load
-    max_impact_no_load = np.max(combined_no_load['rail_impact'])
-    max_impact_full_load = np.max(combined_full_load['rail_impact'])
+    max_impact_no_load = np.max(combined_no_load["rail_impact"])
+    max_impact_full_load = np.max(combined_full_load["rail_impact"])
 
     assert max_impact_full_load > max_impact_no_load
 

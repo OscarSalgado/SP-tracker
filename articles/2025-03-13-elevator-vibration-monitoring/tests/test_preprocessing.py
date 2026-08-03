@@ -1,8 +1,8 @@
 """Tests para preprocesamiento de señales de vibración."""
 
 import numpy as np
-import torch
 import pytest
+import torch
 from src.preprocessing import CWTTransform, ElevatorDataPreprocessor
 
 

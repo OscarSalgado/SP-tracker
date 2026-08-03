@@ -1,14 +1,13 @@
 """Tests para modelos STAN y DSAN."""
 
 import torch
-import pytest
 from src.models import (
-    Mish,
     ChannelAttention,
-    SpatialAttention,
+    DomainAdaptationModule,
+    Mish,
     ShuffleBlock,
     ShuffleNetV2STAN,
-    DomainAdaptationModule,
+    SpatialAttention,
 )
 
 
