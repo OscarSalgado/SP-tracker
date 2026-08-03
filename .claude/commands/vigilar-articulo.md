@@ -38,11 +38,14 @@ e informativo (no una traducción literal del abstract).
 
 1. Carga `taxonomy.yaml` y elige las keywords existentes que mejor describan la temática del
    artículo (puede ser más de una).
-2. Si **ninguna** encaja razonablemente, propón una keyword nueva (nombre + descripción breve) y
+2. **Usa el helper de sugerencias**: ejecuta `python scripts/keyword_suggester.py articles/<slug>`
+   para obtener keywords sugeridas automáticamente basadas en el análisis del `summary.md`. Revisa
+   las sugerencias y valida que son relevantes. Esto evita omisiones de keywords importantes.
+3. Si **ninguna** encaja razonablemente, propón una keyword nueva (nombre + descripción breve) y
    **pide confirmación explícita al usuario con `AskUserQuestion`** antes de añadirla a
    `taxonomy.yaml`. No la añadas si el usuario prefiere reutilizar una existente aunque encaje
    peor.
-3. Escribe las keywords finales en `metadata.yaml` del artículo.
+4. Escribe las keywords finales en `metadata.yaml` del artículo.
 
 ## Fase 3 — Código de reuso
 

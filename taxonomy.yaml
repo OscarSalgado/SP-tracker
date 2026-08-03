@@ -42,3 +42,9 @@ keywords:
     description: >
       Análisis de señales de vibración: diagnóstico de maquinaria, separación de
       componentes, detección de fallos en rodamientos y engranajes.
+
+  - name: application-system
+    description: >
+      Artículos que incluyen un sistema de aplicación práctica: implementación real,
+      modelo dinámico aplicado, demostración en caso de uso industrial o validación
+      experimental del método propuesto.
