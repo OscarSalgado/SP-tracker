@@ -14,7 +14,6 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from collections import Counter
 from pathlib import Path
 
 import yaml
@@ -27,68 +26,158 @@ TAXONOMY_PATH = REPO_ROOT / "taxonomy.yaml"
 KEYWORD_TERMS = {
     "machine-learning": {
         "terms": {
-            "machine learning", "aprendizaje automático", "supervised learning",
-            "unsupervised learning", "training", "model", "algoritmo", "clasificación",
-            "clustering", "regression", "feature", "datos etiquetados", "predictor"
+            "machine learning",
+            "aprendizaje automático",
+            "supervised learning",
+            "unsupervised learning",
+            "training",
+            "model",
+            "algoritmo",
+            "clasificación",
+            "clustering",
+            "regression",
+            "feature",
+            "datos etiquetados",
+            "predictor",
         }
     },
     "deep-learning": {
         "terms": {
-            "deep learning", "redes neuronales", "neural network", "cnn", "rnn",
-            "lstm", "transformer", "convolutional", "arquitectura", "capas",
-            "backpropagation", "entrenamiento de redes", "activación"
+            "deep learning",
+            "redes neuronales",
+            "neural network",
+            "cnn",
+            "rnn",
+            "lstm",
+            "transformer",
+            "convolutional",
+            "arquitectura",
+            "capas",
+            "backpropagation",
+            "entrenamiento de redes",
+            "activación",
         }
     },
     "nlp": {
         "terms": {
-            "nlp", "procesamiento de lenguaje", "language model", "embeddings",
-            "text classification", "generación de texto", "traducción automática",
-            "tokenización", "bert", "gpt", "word2vec", "resumen de texto",
-            "análisis de sentimiento"
+            "nlp",
+            "procesamiento de lenguaje",
+            "language model",
+            "embeddings",
+            "text classification",
+            "generación de texto",
+            "traducción automática",
+            "tokenización",
+            "bert",
+            "gpt",
+            "word2vec",
+            "resumen de texto",
+            "análisis de sentimiento",
         }
     },
     "computer-vision": {
         "terms": {
-            "computer vision", "visión por computador", "image classification",
-            "detección de objetos", "object detection", "segmentación de imágenes",
-            "reconocimiento facial", "video analysis", "yolo", "cnn visual",
-            "detección de bordes"
+            "computer vision",
+            "visión por computador",
+            "image classification",
+            "detección de objetos",
+            "object detection",
+            "segmentación de imágenes",
+            "reconocimiento facial",
+            "video analysis",
+            "yolo",
+            "cnn visual",
+            "detección de bordes",
         }
     },
     "optimization": {
         "terms": {
-            "optimization", "optimización", "algoritmo genético", "simulated annealing",
-            "descenso de gradiente", "metaheurística", "particle swarm", "minimización",
-            "maximización", "programación lineal", "búsqueda", "convergencia",
-            "función objetivo", "runge-kutta"
+            "optimization",
+            "optimización",
+            "algoritmo genético",
+            "simulated annealing",
+            "descenso de gradiente",
+            "metaheurística",
+            "particle swarm",
+            "minimización",
+            "maximización",
+            "programación lineal",
+            "búsqueda",
+            "convergencia",
+            "función objetivo",
+            "runge-kutta",
         }
     },
     "time-series": {
         "terms": {
-            "time series", "series temporal", "serie temporal", "temporal", "predicción",
-            "forecasting", "detección de anomalías", "anomaly detection", "autocorrelación",
-            "arima", "movimiento promedio", "tendencia", "estacionariedad", "análisis temporal",
-            "retraso temporal"
+            "time series",
+            "series temporal",
+            "serie temporal",
+            "temporal",
+            "predicción",
+            "forecasting",
+            "detección de anomalías",
+            "anomaly detection",
+            "autocorrelación",
+            "arima",
+            "movimiento promedio",
+            "tendencia",
+            "estacionariedad",
+            "análisis temporal",
+            "retraso temporal",
         }
     },
     "vibration-analysis": {
         "terms": {
-            "vibration", "vibración", "vibraciones", "análisis de vibración", "separación de componentes",
-            "diagnóstico de maquinaria", "rotación", "rodamientos", "engranajes",
-            "señal de vibración", "fallo en rodamiento", "bearing", "mecánica rotatoria",
-            "frecuencia natural", "modos de vibración", "dinámica", "dinámico", "fft",
-            "estress", "estrés", "aceleración", "amortiguamiento", "frecuencias", "transitorios",
-            "impulsivos", "excentricidad", "oscilaciones"
+            "vibration",
+            "vibración",
+            "vibraciones",
+            "análisis de vibración",
+            "separación de componentes",
+            "diagnóstico de maquinaria",
+            "rotación",
+            "rodamientos",
+            "engranajes",
+            "señal de vibración",
+            "fallo en rodamiento",
+            "bearing",
+            "mecánica rotatoria",
+            "frecuencia natural",
+            "modos de vibración",
+            "dinámica",
+            "dinámico",
+            "fft",
+            "estress",
+            "estrés",
+            "aceleración",
+            "amortiguamiento",
+            "frecuencias",
+            "transitorios",
+            "impulsivos",
+            "excentricidad",
+            "oscilaciones",
         }
     },
     "application-system": {
         "terms": {
-            "application system", "sistema de aplicación", "aplicación práctica",
-            "implementación", "modelo aplicado", "caso de uso", "industrial", "validación experimental",
-            "demostración", "sistema real", "implementación real", "validación", "caso práctico",
-            "escalabilidad", "despliegue", "sistema completo"
+            "application system",
+            "sistema de aplicación",
+            "aplicación práctica",
+            "implementación",
+            "modelo aplicado",
+            "caso de uso",
+            "industrial",
+            "validación experimental",
+            "demostración",
+            "sistema real",
+            "implementación real",
+            "validación",
+            "caso práctico",
+            "escalabilidad",
+            "despliegue",
+            "sistema completo",
         }
-    }
+    },
 }
 
 
@@ -100,7 +189,7 @@ def load_taxonomy() -> dict[str, dict]:
         name = entry["name"]
         keywords_dict[name] = {
             "description": entry.get("description", ""),
-            "terms": KEYWORD_TERMS.get(name, {}).get("terms", set())
+            "terms": KEYWORD_TERMS.get(name, {}).get("terms", set()),
         }
     return keywords_dict
 
@@ -134,7 +223,9 @@ def normalize_text(text: str) -> str:
     return text
 
 
-def score_keywords(summary: str, keywords_dict: dict[str, dict], current_keywords: list[str]) -> dict[str, float]:
+def score_keywords(
+    summary: str, keywords_dict: dict[str, dict], current_keywords: list[str]
+) -> dict[str, float]:
     """Puntúa cada keyword basándose en frecuencia de términos en el summary."""
     if not summary:
         return {}
@@ -176,11 +267,7 @@ def score_keywords(summary: str, keywords_dict: dict[str, dict], current_keyword
     return scores
 
 
-def suggest_keywords(
-    article_dir: Path,
-    threshold: float = 0.1,
-    show_scores: bool = False
-) -> dict:
+def suggest_keywords(article_dir: Path, threshold: float = 0.1, show_scores: bool = False) -> dict:
     """Sugiere keywords para un artículo."""
     article_dir = article_dir.resolve()
 
@@ -211,7 +298,7 @@ def suggest_keywords(
         "article_dir": str(article_dir),
         "current_keywords": current_keywords,
         "suggestions": suggestions if show_scores else list(suggestions.keys()),
-        "all_scores": scores if show_scores else None
+        "all_scores": scores if show_scores else None,
     }
 
 
@@ -234,14 +321,14 @@ def format_output(result: dict, show_scores: bool = False) -> str:
 
     if show_scores and isinstance(suggestions, dict):
         if suggestions:
-            output.append(f"\n💡 Keywords sugeridas (threshold ≥ 0.05):\n")
+            output.append("\n💡 Keywords sugeridas (threshold ≥ 0.05):\n")
             for kw, score in suggestions.items():
                 output.append(f"  • {kw:<30} (score: {score:.3f})")
         else:
             output.append("\n💡 Sin sugerencias (baja relevancia)")
     elif isinstance(suggestions, list):
         if suggestions:
-            output.append(f"\n💡 Keywords sugeridas:\n")
+            output.append("\n💡 Keywords sugeridas:\n")
             for kw in suggestions:
                 output.append(f"  • {kw}")
         else:
@@ -252,27 +339,18 @@ def format_output(result: dict, show_scores: bool = False) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("article", nargs="?", type=Path, help="Ruta a directorio articles/<slug>")
     parser.add_argument(
-        "article",
-        nargs="?",
-        type=Path,
-        help="Ruta a directorio articles/<slug>"
+        "--show-scores", action="store_true", help="Mostrar puntuaciones detalladas"
     )
     parser.add_argument(
-        "--show-scores",
-        action="store_true",
-        help="Mostrar puntuaciones detalladas"
-    )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        help="Output como JSON (para integración programática)"
+        "--json", action="store_true", help="Output como JSON (para integración programática)"
     )
     parser.add_argument(
         "--threshold",
         type=float,
         default=0.05,
-        help="Puntuación mínima para sugerir (default: 0.05)"
+        help="Puntuación mínima para sugerir (default: 0.05)",
     )
 
     args = parser.parse_args()

@@ -5,18 +5,18 @@ Diseñado para integración en flujos automatizados como /vigilar-articulo.
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
-import yaml
-
-from keyword_suggester import load_taxonomy, load_summary, load_current_keywords, score_keywords
+from keyword_suggester import (
+    load_current_keywords,
+    load_summary,
+    load_taxonomy,
+    score_keywords,
+)
 
 
 def get_keyword_suggestions(
-    article_dir: Path,
-    threshold: float = 0.05,
-    num_suggestions: int = 3
+    article_dir: Path, threshold: float = 0.05, num_suggestions: int = 3
 ) -> list[str]:
     """Obtiene sugerencias de keywords para un artículo.
 
@@ -43,7 +43,7 @@ def get_keyword_suggestions(
     suggestions = sorted(
         [(kw, score) for kw, score in scores.items() if score >= threshold],
         key=lambda x: x[1],
-        reverse=True
+        reverse=True,
     )
 
     # Retornar solo los nombres, limitado a num_suggestions
@@ -51,9 +51,7 @@ def get_keyword_suggestions(
 
 
 def format_suggestions_for_display(
-    article_dir: Path,
-    suggestions: list[str],
-    current_keywords: list[str] | None = None
+    article_dir: Path, suggestions: list[str], current_keywords: list[str] | None = None
 ) -> str:
     """Formatea sugerencias para mostrar al usuario durante /vigilar-articulo.
 
@@ -77,7 +75,7 @@ def format_suggestions_for_display(
         output.append(f"✓ Keywords asignadas: {', '.join(current_keywords)}")
 
     if suggestions:
-        output.append(f"\n💡 Keywords sugeridas adicionales:\n")
+        output.append("\n💡 Keywords sugeridas adicionales:\n")
         for i, kw in enumerate(suggestions, 1):
             output.append(f"  {i}. {kw}")
 
