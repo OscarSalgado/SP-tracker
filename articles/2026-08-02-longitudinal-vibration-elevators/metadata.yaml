@@ -5,10 +5,13 @@ authors:
   - "Muyao Chen"
   - "Jiayi Xie"
 source_url: "https://doi.org/10.3390/app16104957"
+doi: "10.3390/app16104957"
 date_added: "2026-08-02"
 keywords:
   - optimization
   - vibration-analysis
-  - application-system
 status: code_generated
 data_source: synthetic
+entry_type: article
+year: 2025
+venue: "Applied Sciences"
