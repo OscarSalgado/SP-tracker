@@ -1,0 +1,21 @@
+title: "Classifier-guided neural blind deconvolution: a physics-informed denoising module for bearing fault diagnosis under heavy noise"
+authors:
+  - "Jing-Xiao Liao"
+  - "Chao He"
+  - "Jipu Li"
+  - "Jinwei Sun"
+  - "Shiping Zhang"
+  - "Xiaoge Zhang"
+source_url: "https://arxiv.org/abs/2404.15341"
+date_added: "2026-08-05"
+keywords:
+  - deep-learning
+  - signal-separation
+  - vibration-analysis
+status: code_generated
+data_source: synthetic
+
+entry_type: misc
+year: 2024
+venue: "arXiv"
+doi: ""
