@@ -1,0 +1,18 @@
+title: "Explainable fault and severity classification for rolling element bearings using Kolmogorov-Arnold networks"
+authors:
+  - "Spyros Rigas"
+  - "Michalis Papachristou"
+  - "Ioannis Sotiropoulos"
+  - "Georgios Alexandridis"
+source_url: "https://arxiv.org/abs/2412.01322"
+date_added: "2026-08-05"
+keywords:
+  - deep-learning
+  - vibration-analysis
+  - machine-learning
+status: code_generated
+data_source: synthetic
+entry_type: misc
+year: 2024
+venue: "arXiv"
+doi: ""
