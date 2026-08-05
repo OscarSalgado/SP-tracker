@@ -42,3 +42,8 @@ keywords:
     description: >
       Análisis de señales de vibración: diagnóstico de maquinaria, separación de
       componentes, detección de fallos en rodamientos y engranajes.
+
+  - name: signal-separation
+    description: >
+      Separación de señales: métodos para descomponer o aislar componentes
+      independientes de una señal mixta (blind source separation, separación ciega).

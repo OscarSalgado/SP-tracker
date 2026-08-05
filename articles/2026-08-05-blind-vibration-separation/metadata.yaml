@@ -1,0 +1,18 @@
+title: "Blind Separation of Vibration Sources using Deep Learning and Deconvolution"
+authors:
+  - "Igor Makienko"
+  - "Michael Grebshtein"
+  - "Eli Gildish"
+source_url: "https://arxiv.org/abs/2405.12774"
+date_added: "2026-08-05"
+keywords:
+  - vibration-analysis
+  - deep-learning
+  - signal-separation
+status: code_generated
+data_source: synthetic
+
+entry_type: misc
+year: 2024
+venue: "arXiv"
+doi: ""
