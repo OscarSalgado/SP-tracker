@@ -8,3 +8,6 @@ htmlcov/
 *.egg-info/
 .venv/
 venv/
+
+# openlore analysis artifacts
+.openlore/

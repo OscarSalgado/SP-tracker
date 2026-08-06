@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-08-06T05:33:44.749Z",
+  "specVersion": "1.0.0",
+  "domains": [
+    {
+      "domain": "article",
+      "specPath": "openspec/specs/article/spec.md",
+      "sourceFiles": [
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\src\\elevator_model.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\src\\excitations.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\src\\solver.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\src\\generate_synthetic_data.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\src\\__init__.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\tests\\test_elevator_model.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\tests\\test_excitations.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\tests\\test_generate_synthetic_data.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\tests\\test_solver.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-blind-vibration-separation\\notebook.ipynb",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-blind-vibration-separation\\summary.md",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-blind-vibration-separation\\metadata.yaml",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-blind-vibration-separation\\requirements.txt",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\notebook.ipynb",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\metadata.yaml",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\requirements.txt",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\statistics.csv",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\summary.md",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\_template\\notebook.ipynb",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\_template\\metadata.yaml",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\_template\\requirements.txt",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\_template\\summary.md",
+        "C:\\Users\\osalgado\\SP-tracker\\scripts\\validate_article.py",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\data\\README.md",
+        "C:\\Users\\osalgado\\SP-tracker\\articles\\2026-08-02-longitudinal-vibration-elevators\\data\\synthetic_elevator_data.pkl"
+      ],
+      "requirementCount": 4,
+      "dependsOn": [],
+      "calledBy": []
+    },
+    {
+      "domain": "bibliography",
+      "specPath": "openspec/specs/bibliography/spec.md",
+      "sourceFiles": [
+        "C:\\Users\\osalgado\\SP-tracker\\scripts\\generate_bibliography.py"
+      ],
+      "requirementCount": 4,
+      "dependsOn": [],
+      "calledBy": []
+    },
+    {
+      "domain": "synthetic-data",
+      "specPath": "openspec/specs/synthetic-data/spec.md",
+      "sourceFiles": [],
+      "requirementCount": 17,
+      "dependsOn": [],
+      "calledBy": []
+    },
+    {
+      "domain": "validation",
+      "specPath": "openspec/specs/validation/spec.md",
+      "sourceFiles": [],
+      "requirementCount": 9,
+      "dependsOn": [],
+      "calledBy": []
+    }
+  ]
+}

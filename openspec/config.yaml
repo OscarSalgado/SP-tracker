@@ -1,0 +1,15 @@
+schema: spec-driven
+openlore:
+  version: 1.0.0
+  generatedAt: 2026-08-06T05:33:44.719Z
+  domains:
+    - article
+    - synthetic-data
+    - validation
+    - bibliography
+  confidence: 0.7
+context: |-
+  # Auto-detected by openlore
+  Tech stack: Python
+  Architecture: Layered (routes → controllers → services → repositories)
+  Domains: article, taxonomy, synthetic-data, validation, bibliography
